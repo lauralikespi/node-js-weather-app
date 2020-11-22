@@ -9,6 +9,8 @@ app.engine('pug', require('pug').__express)
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -27,10 +29,15 @@ app.get('/sendWeatherAPI', (req, res) => {
         var weather = obj[0].WeatherText;
         var temp = obj[0].Temperature.Metric.Value;
         var degrees = obj[0].Temperature.Metric.Unit;
-        var time = obj[0].LocalObservationDateTime;
-        console.log(weather);
+        var timestamp = obj[0].LocalObservationDateTime;
+        var year = timestamp.substring(0,4);
+        var month = timestamp.substring(5,7);
+        var day = timestamp.substring(8,10);
+        var time = timestamp.substring(11,16);
+        var date = day + "-" + month + "-" + year;
+        //console.log(typeof(timestamp));
         // res.send(weather);
-        res.render('weather', { title: 'Weather App', weather: weather, temp: temp, degrees: degrees, time: time })
+        res.render('weather', { title: 'Weather App', weather: weather, temp: temp, degrees: degrees, time: time, date: date })
       });
 })
 
